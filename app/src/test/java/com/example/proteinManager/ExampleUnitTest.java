@@ -1,4 +1,4 @@
-package com.example.healthappgui;
+package com.example.proteinManager;
 
 import org.junit.Test;
 

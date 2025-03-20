@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.healthappgui"
+    namespace = "com.example.proteinManager"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.healthappgui"
+        applicationId = "com.example.proteinManager"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
