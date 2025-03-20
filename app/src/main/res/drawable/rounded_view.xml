@@ -5,4 +5,8 @@
     <solid android:color="@color/skyBlue"/>
 
     <corners android:radius="14dp"/>
+    <gradient
+        android:startColor="@color/background"
+        android:endColor="@color/skyBlue"
+        android:angle="270"/>
 </shape>
