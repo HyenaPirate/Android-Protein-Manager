@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import java.util.Locale;
 
@@ -18,6 +19,7 @@ public class SettingsActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private Button buttonChangeLanguage;
     private ImageButton buttonBack;
+    private androidx.appcompat.widget.SwitchCompat switchDarkMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,12 @@ public class SettingsActivity extends AppCompatActivity {
 
         buttonBack = findViewById(R.id.buttonBack);
         buttonChangeLanguage = findViewById(R.id.buttonChangeLanguage);
+        switchDarkMode = findViewById(R.id.switch_dark_mode);
+
+        boolean isDarkMode = sharedPreferences.getBoolean("DarkMode", false);
+        switchDarkMode.setChecked(isDarkMode);
+
+        setAppTheme(isDarkMode);
 
         buttonBack.setOnClickListener(v -> {
             Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
@@ -37,6 +45,12 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         buttonChangeLanguage.setOnClickListener(v -> showLanguageDialog());
+
+        switchDarkMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            setAppTheme(isChecked);
+            editor.putBoolean("DarkMode", isChecked);
+            editor.apply();
+        });
     }
 
     private void showLanguageDialog() {
@@ -53,7 +67,6 @@ public class SettingsActivity extends AppCompatActivity {
         dialog.show();
     }
 
-
     private void changeLanguage(String langCode) {
         editor.putString("Language", langCode);
         editor.apply();
@@ -65,5 +78,13 @@ public class SettingsActivity extends AppCompatActivity {
         getResources().updateConfiguration(config, getResources().getDisplayMetrics());
 
         recreate();
+    }
+
+    private void setAppTheme(boolean isDarkMode) {
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 }
