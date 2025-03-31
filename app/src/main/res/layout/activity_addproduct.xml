@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+
+
+    <ImageButton
+        android:id="@+id/buttonBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="left"
+        android:scaleType="fitCenter"
+        android:layout_marginTop="19dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:src="@drawable/arrow"
+        app:tint="@color/black" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/addProduct"
+        android:background="@android:color/transparent"
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/editText_productName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/productName"
+        android:textColorHint="@color/hintColor"
+        android:background="@android:color/white"
+        android:padding="12dp"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/editText_carbs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/carbs"
+        android:textColorHint="@color/hintColor"
+        android:background="@android:color/white"
+        android:padding="12dp"
+        android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:id="@+id/editText_protein"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/protein"
+        android:textColorHint="@color/hintColor"
+        android:background="@android:color/white"
+        android:padding="12dp"
+        android:layout_marginTop="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@android:color/transparent"
+        android:layout_marginTop="20dp"
+        android:padding="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Per 100g"
+            android:background="@android:color/transparent"
+            android:textSize="16sp"
+            android:layout_weight="1"
+            android:gravity="end"/>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:thumbTint="@color/white"
+            android:trackTint="@color/white"
+            android:padding="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Per piece"
+            android:background="@android:color/transparent"
+            android:textSize="16sp"
+            android:layout_weight="1"
+            android:gravity="start"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_addProduct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/skyBlue"
+        android:text="@string/addProduct"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"/>
+
+    <ListView
+        android:id="@+id/listView_productList"
+        android:background="@android:color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="20dp"/>
+
+</LinearLayout>

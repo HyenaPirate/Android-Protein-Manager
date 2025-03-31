@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">ProteinManager</string>
     <string name="protein">Protein</string>
+    <string name="carbs">Carbs</string>
+    <string name="calories">Calories</string>
+    <string name="steps">Steps</string>
+    <string name="addProduct">Add Product</string>
+    <string name="productName">Product Name</string>
+    <string name="language">🌐 Choose Language</string>
+    <string name="backup">Backup</string>
+    <string-array name="language_options">
+        <item>English</item>
+        <item>Polski</item>
+    </string-array>
 </resources>
+

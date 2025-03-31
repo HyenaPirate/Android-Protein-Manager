@@ -3,6 +3,9 @@
     <style name="Base.Theme.HealthAppGui" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:backgroundDimAmount">0.0</item>
+        <item name="android:background">@drawable/gradient</item>
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
     <style name="Theme.HealthAppGui" parent="Base.Theme.HealthAppGui" />

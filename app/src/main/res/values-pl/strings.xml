@@ -2,4 +2,11 @@
 <resources>
     <string name="app_name">ZarządcaProtein</string>
     <string name="protein">Proteiny</string>
+    <string name="carbs">Węgle</string>
+    <string name="calories">Kalorie</string>
+    <string name="steps">Kroki</string>
+    <string name="addProduct">Dodaj Produkt</string>
+    <string name="productName">Nazwa Produktu</string>
+    <string name="language">🌐 Wybierz jezyk</string>
+    <string name="backup">Kopia zapasowa</string>
 </resources>
