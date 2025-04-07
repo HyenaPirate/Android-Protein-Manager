@@ -8,5 +8,10 @@
     <string name="addProduct">Dodaj Produkt</string>
     <string name="productName">Nazwa Produktu</string>
     <string name="language">🌐 Wybierz jezyk</string>
+    <string name="findShop">Znajdź sklep</string>
+    <string name="buttonBack">Powrót</string>
+    <string name="editName">Edytuj imię</string>
+    <string name="editEmail">Edytuj adres Email</string>
+    <string name="editPassword">Edytuj hasło</string>
     <string name="backup">Kopia zapasowa</string>
 </resources>

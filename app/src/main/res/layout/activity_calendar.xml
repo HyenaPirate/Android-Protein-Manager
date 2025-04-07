@@ -10,16 +10,17 @@
         android:id="@+id/button_back"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_gravity="left"
+        android:layout_gravity="start"
         android:scaleType="fitCenter"
         android:layout_marginTop="19dp"
+        android:contentDescription="@string/buttonBack"
         android:background="?android:attr/selectableItemBackground"
         android:src="@drawable/arrow"
         app:tint="@color/black" />
 
     <CalendarView
         android:id="@+id/calendarView"
-        android:background="@android:color/transparent"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

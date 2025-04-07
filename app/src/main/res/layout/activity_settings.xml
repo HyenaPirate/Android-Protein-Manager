@@ -11,10 +11,10 @@
         android:id="@+id/buttonBack"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_gravity="left"
+        android:layout_gravity="start"
         android:scaleType="fitCenter"
         android:layout_marginTop="16dp"
-        android:contentDescription="buttonBack"
+        android:contentDescription="@string/buttonBack"
         android:background="?android:attr/selectableItemBackground"
         android:src="@drawable/arrow"
         app:tint="@color/black" />

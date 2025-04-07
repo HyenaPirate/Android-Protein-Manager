@@ -12,20 +12,21 @@
         android:layout_marginTop="19dp"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_gravity="left"
+        android:layout_gravity="start"
         android:scaleType="fitCenter"
         android:background="?android:attr/selectableItemBackground"
         android:src="@drawable/arrow"
-        app:tint="@color/black" />
+        app:tint="@color/black"
+        android:contentDescription="@string/buttonBack"/>
 
     <ImageView
         android:id="@+id/image_avatar"
         android:layout_width="148dp"
         android:layout_height="152dp"
         android:layout_marginTop="16dp"
-        android:tint="@color/black"
         android:scaleType="centerCrop"
-        android:src="@drawable/avatar" />
+        android:src="@drawable/avatar"
+        app:tint="@color/black" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,13 +41,13 @@
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_weight="1"
-            android:hint="Name"
+            android:hint="@string/editName"
             android:inputType="textPersonName" />
 
         <ImageButton
             android:id="@+id/button_edit_name"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/edit_icon"
@@ -66,13 +67,13 @@
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_weight="1"
-            android:hint="Email"
+            android:hint="@string/editEmail"
             android:inputType="textEmailAddress" />
 
         <ImageButton
             android:id="@+id/button_edit_email"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/edit_icon"
@@ -92,13 +93,13 @@
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_weight="1"
-            android:hint="Password"
+            android:hint="@string/editPassword"
             android:inputType="textPassword" />
 
         <ImageButton
             android:id="@+id/button_edit_password"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/edit_icon"
@@ -118,7 +119,17 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@android:color/transparent"
-        android:layout_weight="1"/>
+        android:layout_weight="0.5"/>
+
+    <Button
+        android:id="@+id/button_findShop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/skyBlue"
+        android:text="@string/findShop"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:layout_marginBottom="15dp"/>
 
     <Button
         android:id="@+id/button_backup"

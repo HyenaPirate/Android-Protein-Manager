@@ -1,19 +1,23 @@
 package com.example.proteinManager;
 
 import android.content.Intent;
+import android.net.Uri;
+
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class ProfileSettingsActivity extends AppCompatActivity {
 
+public class ProfileSettingsActivity extends AppCompatActivity {
+    private Button findShopButton;
     private ImageButton backButton;
     private ImageView avatarImage;
-    private EditText nameEditText, passwordEditText;
-    private Button backupButton;
+    private EditText nameEditText, emailEditText, passwordEditText;
+    private Button saveButton, backupButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,8 +27,33 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         backButton = findViewById(R.id.buttonBack);
         avatarImage = findViewById(R.id.image_avatar);
         nameEditText = findViewById(R.id.editText_name);
+        emailEditText = findViewById(R.id.editText_email);
         passwordEditText = findViewById(R.id.editText_password);
         backupButton = findViewById(R.id.button_backup);
+        findShopButton = findViewById(R.id.button_findShop);
+        saveButton = findViewById(R.id.button_save);
+
+        avatarImage.setOnClickListener(v -> {
+            //to do
+        });
+
+        saveButton.setOnClickListener(v -> {
+            Toast.makeText(this, "Changes saved!", Toast.LENGTH_SHORT).show();
+        });
+
+        findShopButton.setOnClickListener(v -> {
+            Uri gmmIntentUri = Uri.parse("geo:0,0?q=Protein+Shop");
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+
+            if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(mapIntent);
+            } else {
+                Uri webUri = Uri.parse("https://www.google.com/maps/search/?api=1&query=Protein+Shop");
+                Intent webIntent = new Intent(Intent.ACTION_VIEW, webUri);
+                startActivity(webIntent);
+            }
+        });
 
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileSettingsActivity.this, MainActivity.class);
@@ -33,7 +62,8 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         });
 
         backupButton.setOnClickListener(v -> {
-            // uwu
+            // Backup code
         });
     }
 }
+
