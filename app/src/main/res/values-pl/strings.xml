@@ -15,5 +15,7 @@
     <string name="editPassword">Edytuj hasło</string>
     <string name="Language">Język</string>
     <string name="darkMode">Ciemny Motyw</string>
+    <string name="no_steps_sensor">Brak Sensora</string>
+    <string name="settings">Ustawienia</string>
     <string name="backup">Kopia zapasowa</string>
 </resources>

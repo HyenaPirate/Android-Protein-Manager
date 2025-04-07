@@ -15,6 +15,8 @@
     <string name="editPassword">Edit Password</string>
     <string name="Language">Language</string>
     <string name="darkMode">Dark Mode</string>
+    <string name="no_steps_sensor">No Sensor</string>
+    <string name="settings">Settings</string>
     <string-array name="language_options">
         <item>English</item>
         <item>Polski</item>
