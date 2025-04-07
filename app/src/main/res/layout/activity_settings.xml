@@ -42,7 +42,7 @@
             android:background="@android:color/transparent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="Dark Mode"
+            android:text="@string/darkMode"
             android:textSize="22sp" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -66,7 +66,7 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:gravity="center_vertical"
-            android:text="Language"
+            android:text="@string/Language"
             android:textSize="22sp" />
 
         <Button

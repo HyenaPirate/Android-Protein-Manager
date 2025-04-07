@@ -13,5 +13,7 @@
     <string name="editName">Edytuj imię</string>
     <string name="editEmail">Edytuj adres Email</string>
     <string name="editPassword">Edytuj hasło</string>
+    <string name="Language">Język</string>
+    <string name="darkMode">Ciemny Motyw</string>
     <string name="backup">Kopia zapasowa</string>
 </resources>
