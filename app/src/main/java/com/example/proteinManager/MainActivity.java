@@ -1,4 +1,5 @@
 package com.example.proteinManager;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -48,6 +49,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String email = prefs.getString("email", null);
+        String password = prefs.getString("password", null);
+
+        if (email == null || password == null) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+        setContentView(R.layout.activity_main);
+
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
         String language = sharedPreferences.getString(PREF_LANGUAGE, "en");
@@ -120,10 +135,8 @@ public class MainActivity extends AppCompatActivity {
 
         ListView listView = findViewById(R.id.listView_productList);
         productList = new ArrayList<>();
-        productList.add("Twoja stara");
         productList.add("Ziemniak");
         productList.add("Cebula");
-        productList.add("Twoj stary");
 
         adapter = new ArrayAdapter<>(this, R.layout.list_item, R.id.textView_productName, productList);
         listView.setAdapter(adapter);

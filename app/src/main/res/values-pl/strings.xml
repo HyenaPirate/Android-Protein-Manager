@@ -9,6 +9,11 @@
     <string name="productName">Nazwa Produktu</string>
     <string name="language">🌐 Wybierz jezyk</string>
     <string name="findShop">Znajdź sklep</string>
+    <string name="login">Zaloguj</string>
+    <string name="register">zarejestruj</string>
+    <string name="welcome">Witaj</string>
+    <string name="logout">Wyloguj</string>
+    <string name="save">Zapisz</string>
     <string name="buttonBack">Powrót</string>
     <string name="editName">Edytuj imię</string>
     <string name="editEmail">Edytuj adres Email</string>
@@ -18,4 +23,8 @@
     <string name="no_steps_sensor">Brak Sensora</string>
     <string name="settings">Ustawienia</string>
     <string name="backup">Kopia zapasowa</string>
+    <string name="login_success">Zalogowano pomyślnie</string>
+    <string name="login_failed">Nieprawidłowy e-mail lub hasło</string>
+    <string name="fields_required">Wszystkie pola są wymagane</string>
+    <string name="register_success">Zarejestrowano pomyślnie</string>
 </resources>

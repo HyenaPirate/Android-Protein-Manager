@@ -9,6 +9,11 @@
     <string name="language">🌐 Choose Language</string>
     <string name="backup">Backup</string>
     <string name="findShop">Find Shop</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="welcome">Welcome</string>
+    <string name="logout">Logout</string>
+    <string name="save">Save</string>
     <string name="buttonBack">Go back</string>
     <string name="editName">Edit Name</string>
     <string name="editEmail">Edit Email</string>
@@ -17,6 +22,10 @@
     <string name="darkMode">Dark Mode</string>
     <string name="no_steps_sensor">No Sensor</string>
     <string name="settings">Settings</string>
+    <string name="login_success">Logged in successfully</string>
+    <string name="login_failed">Invalid email or password</string>
+    <string name="fields_required">All fields are required</string>
+    <string name="register_success">Registered successfully</string>
     <string-array name="language_options">
         <item>English</item>
         <item>Polski</item>

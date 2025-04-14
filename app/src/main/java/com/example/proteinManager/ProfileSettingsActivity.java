@@ -1,6 +1,8 @@
 package com.example.proteinManager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 
 import android.os.Bundle;
@@ -17,7 +19,8 @@ public class ProfileSettingsActivity extends AppCompatActivity {
     private ImageButton backButton;
     private ImageView avatarImage;
     private EditText nameEditText, emailEditText, passwordEditText;
-    private Button saveButton, backupButton;
+    private Button saveButton, backupButton, logoutButton;
+    private static final String PREFS_NAME = "UserPrefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +35,27 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         backupButton = findViewById(R.id.button_backup);
         findShopButton = findViewById(R.id.button_findShop);
         saveButton = findViewById(R.id.button_save);
+        logoutButton = findViewById(R.id.button_logout);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        String name = sharedPreferences.getString("name", "");
+        String email = sharedPreferences.getString("email", "");
+        String password = sharedPreferences.getString("password", "");
+
+        nameEditText.setText(name);
+        emailEditText.setText(email);
+        passwordEditText.setText(password);
+
+        logoutButton.setOnClickListener(v -> {
+            SharedPreferences prefs = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.clear();
+            editor.apply();
+
+            Intent intent = new Intent(ProfileSettingsActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        });
         avatarImage.setOnClickListener(v -> {
             //to do
         });
