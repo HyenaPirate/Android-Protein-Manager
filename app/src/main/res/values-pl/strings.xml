@@ -27,4 +27,7 @@
     <string name="login_failed">Nieprawidłowy e-mail lub hasło</string>
     <string name="fields_required">Wszystkie pola są wymagane</string>
     <string name="register_success">Zarejestrowano pomyślnie</string>
+    <string name="target_protein">Docelowe białko (g)</string>
+    <string name="consumed_protein">Spożyte białko (g)</string>
+    <string name="protein_display">Białko: %1$d / %2$d g</string>
 </resources>
