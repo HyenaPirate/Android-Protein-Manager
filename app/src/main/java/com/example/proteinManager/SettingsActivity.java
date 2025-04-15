@@ -1,16 +1,19 @@
 package com.example.proteinManager;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import java.io.File;
 import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -21,6 +24,11 @@ public class SettingsActivity extends AppCompatActivity {
     private ImageButton buttonBack;
     private androidx.appcompat.widget.SwitchCompat switchDarkMode;
 
+    private Button loadDataButton;
+    private Button saveDataButton;
+    private EditText sampleNumberText;
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +59,13 @@ public class SettingsActivity extends AppCompatActivity {
             editor.putBoolean("DarkMode", isChecked);
             editor.apply();
         });
+        loadDataButton = findViewById(R.id.buttonLoadData);
+        saveDataButton = findViewById(R.id.buttonSaveData);
+        sampleNumberText = findViewById(R.id.sampleTextPanel);
+
+        saveDataButton.setOnClickListener(v -> saveNumberToJson());
+        loadDataButton.setOnClickListener(v -> loadNumberFromJson());
+
     }
 
     private void showLanguageDialog() {
@@ -87,4 +102,61 @@ public class SettingsActivity extends AppCompatActivity {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
     }
+
+    private File getJsonFile() {
+        return new File(getExternalFilesDir(null), "number_data.json");
+    }
+
+    private void saveNumberToJson() {
+        String input = sampleNumberText.getText().toString().trim();
+        if (input.isEmpty()) {
+            sampleNumberText.setError("Enter a number");
+            return;
+        }
+
+        int number = Integer.parseInt(input);
+        NumberData data = new NumberData(number);
+
+        com.google.gson.Gson gson = new com.google.gson.Gson();
+        String json = gson.toJson(data);
+
+        File file = getJsonFile();
+        try {
+            java.io.FileWriter writer = new java.io.FileWriter(file);
+            writer.write(json);
+            writer.close();
+            showMessage("Saved", "Number saved to file!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showMessage("Error", "Failed to save file.");
+        }
+    }
+
+    private void loadNumberFromJson() {
+        File file = getJsonFile();
+        if (!file.exists()) {
+            showMessage("Not Found", "No saved data found.");
+            return;
+        }
+
+        try {
+            java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(file));
+            NumberData data = new com.google.gson.Gson().fromJson(reader, NumberData.class);
+            reader.close();
+
+            showMessage("Loaded", "Saved number: " + data.number);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showMessage("Error", "Failed to load file.");
+        }
+    }
+
+    private void showMessage(String title, String message) {
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("OK", null)
+                .show();
+    }
+
 }
