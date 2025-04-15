@@ -26,9 +26,14 @@
     <string name="login_failed">Invalid email or password</string>
     <string name="fields_required">All fields are required</string>
     <string name="register_success">Registered successfully</string>
+    <string name="target_protein">Target Protein (g)</string>
+    <string name="consumed_protein">Consumed Protein (g)</string>
+    <string name="protein_display">Protein: %1$d / %2$d g</string>
     <string-array name="language_options">
         <item>English</item>
         <item>Polski</item>
     </string-array>
 </resources>
+
+
 
