@@ -13,6 +13,8 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.google.gson.JsonObject;
+
 import java.io.File;
 import java.util.Locale;
 
@@ -103,9 +105,8 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    private File getJsonFile() {
-        return new File(getExternalFilesDir(null), "number_data.json");
-    }
+
+
 
     private void saveNumberToJson() {
         String input = sampleNumberText.getText().toString().trim();
@@ -113,41 +114,20 @@ public class SettingsActivity extends AppCompatActivity {
             sampleNumberText.setError("Enter a number");
             return;
         }
+        JsonObject numberJson = new JsonObject();
+        numberJson.addProperty("number", Integer.parseInt(input));
 
-        int number = Integer.parseInt(input);
-        NumberData data = new NumberData(number);
+        JsonManager manager = new JsonManager();
+        manager.saveJSONObject(this, "numberJson", numberJson);
 
-        com.google.gson.Gson gson = new com.google.gson.Gson();
-        String json = gson.toJson(data);
-
-        File file = getJsonFile();
-        try {
-            java.io.FileWriter writer = new java.io.FileWriter(file);
-            writer.write(json);
-            writer.close();
-            showMessage("Saved", "Number saved to file!");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showMessage("Error", "Failed to save file.");
-        }
     }
 
     private void loadNumberFromJson() {
-        File file = getJsonFile();
-        if (!file.exists()) {
-            showMessage("Not Found", "No saved data found.");
-            return;
-        }
-
-        try {
-            java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(file));
-            NumberData data = new com.google.gson.Gson().fromJson(reader, NumberData.class);
-            reader.close();
-
-            showMessage("Loaded", "Saved number: " + data.number);
-        } catch (Exception e) {
-            e.printStackTrace();
-            showMessage("Error", "Failed to load file.");
+        JsonManager manager = new JsonManager();
+        JsonObject obj = manager.readJSONObject(this, "numberJson");
+        if (obj != null) {
+            int number = obj.get("number").getAsInt();
+            showMessage("Loaded", "Saved number: " + number);
         }
     }
 

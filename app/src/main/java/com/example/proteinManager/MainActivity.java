@@ -28,6 +28,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -134,9 +138,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         ListView listView = findViewById(R.id.listView_productList);
-        productList = new ArrayList<>();
-        productList.add("Ziemniak");
-        productList.add("Cebula");
+        productList = loadProductsList(this);
+
 
         adapter = new ArrayAdapter<>(this, R.layout.list_item, R.id.textView_productName, productList);
         listView.setAdapter(adapter);
@@ -152,6 +155,29 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 1);
         }
     }
+
+    private ArrayList<String> loadProductsList(Context context) {
+        ArrayList<String> productList = new ArrayList<>();
+
+        JsonManager jsonManager = new JsonManager();
+        JsonArray jsonArray = jsonManager.readJSONArray(context, "products");
+
+        if (jsonArray != null) {
+            for (JsonElement element : jsonArray) {
+                JsonObject product = element.getAsJsonObject();
+                if (product.has("productName")) {
+                    String name = product.get("productName").getAsString();
+                    productList.add(name);
+                }
+            }
+        } else {
+            // fallback values if file is missing or empty
+            productList.add("default product");
+        }
+
+        return productList;
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

@@ -1,5 +1,6 @@
 package com.example.proteinManager;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,11 +9,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
@@ -49,6 +53,7 @@ public class AddProductActivity extends AppCompatActivity {
             String productName = productNameEditText.getText().toString();
 
             if (!productName.isEmpty()) {
+                addProductByName(productName, this);
                 productList.add(productName);
                 adapter.notifyDataSetChanged();
             }
@@ -64,6 +69,39 @@ public class AddProductActivity extends AppCompatActivity {
             scanCode();
         });
     }
+
+    public void addProductByName(String name, Context context) {
+        JsonManager jsonManager = new JsonManager();
+        JsonArray productArray = jsonManager.readJSONArray(context, "products");
+
+        if (productArray == null) {
+            productArray = new JsonArray(); // create new array if file doesn't exist
+        }
+
+        int newId = productArray.size(); // use current size as new ID
+
+        JsonObject newProduct = new JsonObject();
+        newProduct.addProperty("productId", newId);
+        newProduct.addProperty("productName", name);
+        newProduct.add("productCode", null); // null value
+        newProduct.addProperty("productUnit", "sztuka");
+        newProduct.addProperty("productBaseCount", 1);
+
+        // Nutrients object
+        JsonObject nutrients = new JsonObject();
+        nutrients.addProperty("productProtein", 0);
+        nutrients.addProperty("productCarbohydrates", 0);
+        nutrients.addProperty("productCalories", 0);
+
+        newProduct.add("productNutrients", nutrients);
+
+        // Add to array and save
+        productArray.add(newProduct);
+        jsonManager.saveJSONArray(context, "products", productArray);
+
+        Toast.makeText(context, "Product \"" + name + "\" added.", Toast.LENGTH_SHORT).show();
+    }
+
 
     private void returnToMainActivity() {
         Intent resultIntent = new Intent();
