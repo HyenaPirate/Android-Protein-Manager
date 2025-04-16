@@ -28,7 +28,7 @@ public class AddProductActivity extends AppCompatActivity {
     private ArrayList<String> productList;
     private ArrayAdapter<String> adapter;
 
-    private Button scanButton;
+    private ImageButton scanButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class AddProductActivity extends AppCompatActivity {
             returnToMainActivity();
         });
 
-        scanButton = findViewById(R.id.buttonScanCode);
+        scanButton = findViewById(R.id.button_ScanCode);
         scanButton.setOnClickListener(v->{
             scanCode();
         });

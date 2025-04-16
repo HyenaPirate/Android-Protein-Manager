@@ -18,6 +18,7 @@
     <string name="editName">Edit Name</string>
     <string name="editEmail">Edit Email</string>
     <string name="editPassword">Edit Password</string>
+    <string name="productCode">Product Code</string>
     <string name="Language">Language</string>
     <string name="darkMode">Dark Mode</string>
     <string name="no_steps_sensor">No Sensor</string>

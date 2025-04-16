@@ -28,6 +28,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private Button loadDataButton;
     private Button saveDataButton;
+    private EditText editTargetProtein;
     private EditText sampleNumberText;
 
     @SuppressLint("MissingInflatedId")
@@ -35,7 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
+        editTargetProtein = findViewById(R.id.editTarget_protein);
         sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
@@ -61,9 +62,6 @@ public class SettingsActivity extends AppCompatActivity {
             editor.putBoolean("DarkMode", isChecked);
             editor.apply();
         });
-        loadDataButton = findViewById(R.id.buttonLoadData);
-        saveDataButton = findViewById(R.id.buttonSaveData);
-        sampleNumberText = findViewById(R.id.sampleTextPanel);
 
         saveDataButton.setOnClickListener(v -> saveNumberToJson());
         loadDataButton.setOnClickListener(v -> loadNumberFromJson());

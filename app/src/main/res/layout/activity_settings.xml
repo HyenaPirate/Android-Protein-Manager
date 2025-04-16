@@ -77,25 +77,12 @@
             android:textColor="@color/white"
             android:text="@string/language" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/buttonLoadData"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Load json" />
-
-    <Button
-        android:id="@+id/buttonSaveData"
-        android:layout_width="139dp"
-        android:layout_height="wrap_content"
-        android:text="save json" />
-
     <EditText
-        android:id="@+id/sampleTextPanel"
+        android:id="@+id/editTarget_protein"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="Enter a number" />
+        android:layout_height="56dp"
+        android:hint="@string/target_protein"
+        android:inputType="number" />
 
     <View
         android:layout_width="match_parent"
