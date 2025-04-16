@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,13 +40,20 @@ public class AddProductActivity extends AppCompatActivity {
         productNameEditText = findViewById(R.id.editText_productName);
         ListView listView = findViewById(R.id.listView_productList);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Object item = parent.getItemAtPosition(position);
+                Toast.makeText(getApplicationContext(), "click", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         Intent intent = getIntent();
         productList = intent.getStringArrayListExtra("productList");
 
         if (productList == null) {
             productList = new ArrayList<>();
         }
-
         adapter = new ArrayAdapter<>(this, R.layout.list_item, R.id.textView_productName, productList);
         listView.setAdapter(adapter);
 
