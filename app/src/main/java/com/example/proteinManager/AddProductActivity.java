@@ -18,17 +18,25 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class AddProductActivity extends AppCompatActivity {
 
     private EditText productNameEditText;
+    private EditText productProteinEditText;
+    private EditText productCarbsEditText;
+    private EditText productCodeEditText;
     private ArrayList<String> productList;
     private ArrayAdapter<String> adapter;
+
 
     private ImageButton scanButton;
 
@@ -38,22 +46,46 @@ public class AddProductActivity extends AppCompatActivity {
         setContentView(R.layout.activity_addproduct);
 
         productNameEditText = findViewById(R.id.editText_productName);
+        productProteinEditText = findViewById(R.id.editText_protein);
+        productCarbsEditText = findViewById(R.id.editText_carbs);
+        productCodeEditText = findViewById(R.id.editText_productCode);
         ListView listView = findViewById(R.id.listView_productList);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Object item = parent.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(), "click", Toast.LENGTH_SHORT).show();
+                String selectedProduct = (String) parent.getItemAtPosition(position);
+                JsonManager jsonManager = new JsonManager();
+
+                // Load products to get the ID
+                JsonArray productArray = jsonManager.readJSONArray(getApplicationContext(), "products");
+                int foundId = -1;
+
+                if (productArray != null) {
+                    for (JsonElement el : productArray) {
+                        JsonObject obj = el.getAsJsonObject();
+                        if (obj.has("productName") && selectedProduct.equals(obj.get("productName").getAsString())) {
+                            foundId = obj.get("productId").getAsInt();
+                            break;
+                        }
+                    }
+                }
+
+                if (foundId != -1) {
+                    String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                    jsonManager.addIdToCalendar(getApplicationContext(), "calendar", today, foundId);
+
+                    Toast.makeText(getApplicationContext(), "Added \"" + selectedProduct + "\" to calendar", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Product ID not found!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
-        Intent intent = getIntent();
-        productList = intent.getStringArrayListExtra("productList");
 
-        if (productList == null) {
-            productList = new ArrayList<>();
-        }
+// 🔄 Load products from JSON
+        productList = loadProductsList(this);
+
         adapter = new ArrayAdapter<>(this, R.layout.list_item, R.id.textView_productName, productList);
         listView.setAdapter(adapter);
 
@@ -98,9 +130,9 @@ public class AddProductActivity extends AppCompatActivity {
 
         // Nutrients object
         JsonObject nutrients = new JsonObject();
-        nutrients.addProperty("productProtein", 0);
-        nutrients.addProperty("productCarbohydrates", 0);
-        nutrients.addProperty("productCalories", 0);
+        nutrients.addProperty("productProtein", Integer.parseInt(productProteinEditText.getText().toString()));
+        nutrients.addProperty("productCarbohydrates", Integer.parseInt(productCarbsEditText.getText().toString()));
+        nutrients.addProperty("productCalories", Integer.parseInt(productCodeEditText.getText().toString()));
 
         newProduct.add("productNutrients", nutrients);
 
@@ -114,7 +146,6 @@ public class AddProductActivity extends AppCompatActivity {
 
     private void returnToMainActivity() {
         Intent resultIntent = new Intent();
-        resultIntent.putStringArrayListExtra("updatedProductList", productList);
         setResult(RESULT_OK, resultIntent);
         finish();
     }
@@ -142,5 +173,25 @@ public class AddProductActivity extends AppCompatActivity {
         }
     });
 
+    private ArrayList<String> loadProductsList(Context context) {
+        ArrayList<String> productList = new ArrayList<>();
+
+        JsonManager jsonManager = new JsonManager();
+        JsonArray jsonArray = jsonManager.readJSONArray(context, "products");
+
+        if (jsonArray != null) {
+            for (JsonElement element : jsonArray) {
+                JsonObject product = element.getAsJsonObject();
+                if (product.has("productName")) {
+                    String name = product.get("productName").getAsString();
+                    productList.add(name);
+                }
+            }
+        } else {
+            productList.add("default product");
+        }
+
+        return productList;
+    }
 
 }

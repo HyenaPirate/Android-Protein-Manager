@@ -32,7 +32,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -45,10 +47,17 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
 
     private TextView stepsValueTextView;
+    private TextView proteinValueTextView;
+    private TextView carbsValueTextView;
+    private TextView caloriesValueTextView;
     private SensorManager sensorManager;
     private Sensor stepSensor;
     private SensorEventListener stepSensorListener;
     private int stepsCount = 0;
+
+    private int totalProteins = 0;
+    private int totalCarbs = 0;
+    private int totalCalories = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         stepsValueTextView = findViewById(R.id.stepsValue);
+        proteinValueTextView = findViewById(R.id.proteinValue);
+        carbsValueTextView = findViewById(R.id.carbValue);
+        caloriesValueTextView = findViewById(R.id.caloriesValue);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
@@ -140,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.listView_productList);
         productList = loadProductsList(this);
 
-
         adapter = new ArrayAdapter<>(this, R.layout.list_item, R.id.textView_productName, productList);
         listView.setAdapter(adapter);
 
@@ -157,39 +168,87 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ArrayList<String> loadProductsList(Context context) {
+
+        totalProteins = 0;
+        totalCarbs = 0;
+        totalCalories = 0;
+
         ArrayList<String> productList = new ArrayList<>();
-
         JsonManager jsonManager = new JsonManager();
-        JsonArray jsonArray = jsonManager.readJSONArray(context, "products");
-
-        if (jsonArray != null) {
-            for (JsonElement element : jsonArray) {
-                JsonObject product = element.getAsJsonObject();
-                if (product.has("productName")) {
-                    String name = product.get("productName").getAsString();
-                    productList.add(name);
-                }
-            }
-        } else {
-            // fallback values if file is missing or empty
-            productList.add("default product");
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        JsonArray calendarArray = jsonManager.readJSONArray(context, "calendar");
+        if (calendarArray == null) {
+            productList.add("No calendar file.");
+            return productList;
         }
+
+        JsonArray todayIds = null;
+        for (JsonElement entry : calendarArray) {
+            JsonObject day = entry.getAsJsonObject();
+            if (day.has("date") && today.equals(day.get("date").getAsString())) {
+                todayIds = day.getAsJsonArray("productsConsumed");
+                break;
+            }
+        }
+
+        if (todayIds == null || todayIds.isEmpty()) {
+            productList.add("No products consumed today");
+            return productList;
+        }
+
+        // Step 3: Load products.json to match IDs
+        JsonArray productsArray = jsonManager.readJSONArray(context, "products");
+        if (productsArray == null) {
+            productList.add("Failed to load products");
+            return productList;
+        }
+
+        for (JsonElement idElement : todayIds) {
+            int productId = idElement.getAsInt();
+
+            for (JsonElement productEl : productsArray) {
+                JsonObject product = productEl.getAsJsonObject();
+                if (!product.has("productId") || product.get("productId").getAsInt() != productId) {
+                    continue;
+                }
+
+                String name = product.get("productName").getAsString();
+                productList.add(name);
+
+                JsonObject nutrients = product.getAsJsonObject("productNutrients");
+                if (nutrients == null) {
+                    break;
+                }
+                if (nutrients.has("productProtein")) totalProteins += nutrients.get("productProtein").getAsInt();
+                if (nutrients.has("productCalories")) totalCalories += nutrients.get("productCalories").getAsInt();
+                if (nutrients.has("productCarbohydrates")) totalCarbs += nutrients.get("productCarbohydrates").getAsInt();
+
+
+            }
+        }
+        UpdateCounters();
 
         return productList;
     }
 
 
+    private void UpdateCounters(){
+        proteinValueTextView.setText(String.valueOf(totalProteins));
+        carbsValueTextView.setText(String.valueOf(totalCarbs));
+        caloriesValueTextView.setText(String.valueOf(totalCalories));
+        Log.d("Counter", "protein: " + String.valueOf(totalProteins));
+        Log.d("Counter", "carbs: " + String.valueOf(totalCarbs));
+        Log.d("Counter", "calories: " + String.valueOf(totalCalories));
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == ADD_PRODUCT_REQUEST && resultCode == RESULT_OK && data != null) {
-            ArrayList<String> updatedList = data.getStringArrayListExtra("updatedProductList");
-            if (updatedList != null) {
-                productList.clear();
-                productList.addAll(updatedList);
-                adapter.notifyDataSetChanged();
-            }
+        if (requestCode == ADD_PRODUCT_REQUEST && resultCode == RESULT_OK) {
+            productList.clear();
+            productList.addAll(loadProductsList(this));  // reload from JSON
+            adapter.notifyDataSetChanged();
         }
     }
 

@@ -128,4 +128,33 @@ public class JsonManager {
         }
     }
 
+    public void addIdToCalendar(Context context, String fileName, String date, int productId) {
+        JsonArray calendarArray = readJSONArray(context, fileName);
+        if (calendarArray == null) {
+            calendarArray = new JsonArray();
+        }
+
+        boolean dateFound = false;
+        for (JsonElement el : calendarArray) {
+            JsonObject dayEntry = el.getAsJsonObject();
+            if (dayEntry.has("date") && date.equals(dayEntry.get("date").getAsString())) {
+                JsonArray consumed = dayEntry.getAsJsonArray("productsConsumed");
+                consumed.add(productId);
+                dateFound = true;
+                break;
+            }
+        }
+
+        if (!dateFound) {
+            JsonObject newEntry = new JsonObject();
+            newEntry.addProperty("date", date);
+            JsonArray consumed = new JsonArray();
+            consumed.add(productId);
+            newEntry.add("productsConsumed", consumed);
+            calendarArray.add(newEntry);
+        }
+
+        saveJSONArray(context, fileName, calendarArray);
+    }
+
 }

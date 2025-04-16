@@ -2,10 +2,15 @@ package com.example.proteinManager;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -13,9 +18,14 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.google.gson.JsonObject;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.widget.Toast;
 
-import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import android.app.NotificationChannel;
+import androidx.core.app.NotificationCompat;
 import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -26,8 +36,9 @@ public class SettingsActivity extends AppCompatActivity {
     private ImageButton buttonBack;
     private androidx.appcompat.widget.SwitchCompat switchDarkMode;
 
-    private Button loadDataButton;
-    private Button saveDataButton;
+    private Button notificationButton1;
+    private Button notificationButton2;
+
     private EditText editTargetProtein;
     private EditText sampleNumberText;
 
@@ -39,6 +50,16 @@ public class SettingsActivity extends AppCompatActivity {
         editTargetProtein = findViewById(R.id.editTarget_protein);
         sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE);
         editor = sharedPreferences.edit();
+
+        notificationButton1 = findViewById(R.id.buttonNotification1);
+        notificationButton1.setOnClickListener(v -> {
+            sendImmediateNotification();
+        });
+
+        notificationButton2 = findViewById(R.id.buttonNotification2);
+        notificationButton2.setOnClickListener(v -> {
+            scheduleDailyNotification();
+        });
 
         buttonBack = findViewById(R.id.buttonBack);
         buttonChangeLanguage = findViewById(R.id.buttonChangeLanguage);
@@ -62,9 +83,6 @@ public class SettingsActivity extends AppCompatActivity {
             editor.putBoolean("DarkMode", isChecked);
             editor.apply();
         });
-
-        saveDataButton.setOnClickListener(v -> saveNumberToJson());
-        loadDataButton.setOnClickListener(v -> loadNumberFromJson());
 
     }
 
@@ -103,38 +121,78 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    private void sendImmediateNotification() {
+        String channelId = "protein_channel";
+        String channelName = "Protein Notifications";
 
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-
-    private void saveNumberToJson() {
-        String input = sampleNumberText.getText().toString().trim();
-        if (input.isEmpty()) {
-            sampleNumberText.setError("Enter a number");
+        if (notificationManager == null) {
+            Log.e("Notification", "NotificationManager is null");
             return;
         }
-        JsonObject numberJson = new JsonObject();
-        numberJson.addProperty("number", Integer.parseInt(input));
 
-        JsonManager manager = new JsonManager();
-        manager.saveJSONObject(this, "numberJson", numberJson);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    channelName,
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel.setDescription("Channel for immediate notifications");
+            notificationManager.createNotificationChannel(channel);
+        }
 
+        Log.d("Notification", "Notification channel created or already exists.");
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.person_24)
+                .setContentTitle("Protein Manager")
+                .setContentText("Don't forget to update your protein intake!")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+
+        notificationManager.notify(1, builder.build());
+        Log.d("Notification", "Notification should be showing now.");
+
+        Toast.makeText(this, "Push notification sent!", Toast.LENGTH_SHORT).show();
     }
 
-    private void loadNumberFromJson() {
-        JsonManager manager = new JsonManager();
-        JsonObject obj = manager.readJSONObject(this, "numberJson");
-        if (obj != null) {
-            int number = obj.get("number").getAsInt();
-            showMessage("Loaded", "Saved number: " + number);
+
+    @SuppressLint("ScheduleExactAlarm")
+    private void scheduleDailyNotification() {
+        // Time for the alarm (19:00)
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, 15);
+
+        // If it's already past 19:00 today, schedule for tomorrow
+        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+        }
+
+        Intent intent = new Intent(this, NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendar.getTimeInMillis(),
+                    pendingIntent
+            );
+
+            // ✅ Toast confirmation
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+            String formattedTime = sdf.format(calendar.getTime());
+            Toast.makeText(this, "Codzienne przypomnienie ustawione na " + formattedTime + " 💪", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Nie udało się ustawić przypomnienia 😔", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void showMessage(String title, String message) {
-        new AlertDialog.Builder(this)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("OK", null)
-                .show();
-    }
 
 }
