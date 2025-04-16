@@ -95,6 +95,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/black"
+        android:textColor="@color/white"
+        android:textSize="16sp"
         android:layout_marginBottom="15dp"
         android:text="@string/notification1" />
 
@@ -103,6 +105,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/skyBlue"
+        android:textColor="@color/white"
+        android:textSize="16sp"
         android:layout_marginBottom="22dp"
         android:text="@string/notification2" />
 
