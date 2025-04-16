@@ -2,7 +2,7 @@
     <string name="app_name">ProteinManager</string>
     <string name="protein">Protein</string>
     <string name="carbs">Carbs</string>
-    <string name="calories">Calories</string>
+    <string name="calories">Kcal</string>
     <string name="steps">Steps</string>
     <string name="addProduct">Add Product</string>
     <string name="productName">Product Name</string>
@@ -17,6 +17,8 @@
     <string name="buttonBack">Go back</string>
     <string name="editName">Edit Name</string>
     <string name="editEmail">Edit Email</string>
+    <string name="notification1">Immediate notification</string>
+    <string name="notification2">Notification in 15 sec</string>
     <string name="editPassword">Edit Password</string>
     <string name="productCode">Product Code</string>
     <string name="Language">Language</string>

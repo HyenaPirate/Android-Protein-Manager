@@ -132,7 +132,7 @@ public class AddProductActivity extends AppCompatActivity {
         JsonObject nutrients = new JsonObject();
         nutrients.addProperty("productProtein", Integer.parseInt(productProteinEditText.getText().toString()));
         nutrients.addProperty("productCarbohydrates", Integer.parseInt(productCarbsEditText.getText().toString()));
-        nutrients.addProperty("productCalories", Integer.parseInt(productCodeEditText.getText().toString()));
+        nutrients.addProperty("productCode", Integer.parseInt(productCodeEditText.getText().toString()));
 
         newProduct.add("productNutrients", nutrients);
 

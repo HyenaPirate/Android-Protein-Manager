@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (stepSensor == null) {
             stepsValueTextView.setText(getString(R.string.no_steps_sensor));
-            stepsValueTextView.setTextSize(29);
+            stepsValueTextView.setTextSize(25);
         }
         else {
 

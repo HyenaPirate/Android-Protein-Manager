@@ -3,7 +3,7 @@
     <string name="app_name">ZarządcaProtein</string>
     <string name="protein">Proteiny</string>
     <string name="carbs">Węgle</string>
-    <string name="calories">Kalorie</string>
+    <string name="calories">Kcal</string>
     <string name="steps">Kroki</string>
     <string name="addProduct">Dodaj Produkt</string>
     <string name="productName">Nazwa Produktu</string>
@@ -16,6 +16,8 @@
     <string name="save">Zapisz</string>
     <string name="buttonBack">Powrót</string>
     <string name="editName">Edytuj imię</string>
+    <string name="notification1">Powiadomienie natychmiastowe</string>
+    <string name="notification2">Powiadomienie za 15 sec</string>
     <string name="editEmail">Edytuj adres Email</string>
     <string name="editPassword">Edytuj hasło</string>
     <string name="productCode">Kod produktu</string>
