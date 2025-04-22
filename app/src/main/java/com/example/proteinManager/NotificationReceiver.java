@@ -11,10 +11,10 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+
 public class NotificationReceiver extends BroadcastReceiver {
 
     private static final String CHANNEL_ID = "protein_reminder_channel";
-
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("Reminder", "NotificationReceiver triggered ✅");
@@ -48,5 +48,8 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (notificationManager != null) {
             notificationManager.notify(1, builder.build());
         }
+
     }
+
+
 }

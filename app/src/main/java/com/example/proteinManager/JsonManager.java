@@ -157,4 +157,32 @@ public class JsonManager {
         saveJSONArray(context, fileName, calendarArray);
     }
 
+    public void saveSteps(Context context, String date, int steps) {
+        JsonArray calendarArray = readJSONArray(context, "calendar");
+        if (calendarArray == null) {
+            calendarArray = new JsonArray();
+        }
+
+        boolean dateFound = false;
+        for (JsonElement el : calendarArray) {
+            JsonObject dayEntry = el.getAsJsonObject();
+            if (dayEntry.has("date") && date.equals(dayEntry.get("date").getAsString())) {
+                dayEntry.addProperty("stepsCounted", steps);
+                dateFound = true;
+                break;
+            }
+        }
+
+        if (!dateFound) {
+            JsonObject newEntry = new JsonObject();
+            newEntry.addProperty("date", date);
+            newEntry.add("productsConsumed", new JsonArray());
+            newEntry.addProperty("stepsCounted", steps);
+            calendarArray.add(newEntry);
+        }
+
+        saveJSONArray(context, "calendar", calendarArray);
+    }
+
+
 }

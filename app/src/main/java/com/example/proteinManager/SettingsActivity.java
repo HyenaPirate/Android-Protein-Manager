@@ -39,15 +39,14 @@ public class SettingsActivity extends AppCompatActivity {
     private Button notificationButton1;
     private Button notificationButton2;
 
-    private EditText editTargetProtein;
-    private EditText sampleNumberText;
+    private int notificationHour = 17, notificationMinute = 30;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        editTargetProtein = findViewById(R.id.editTarget_protein);
         sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
@@ -58,7 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         notificationButton2 = findViewById(R.id.buttonNotification2);
         notificationButton2.setOnClickListener(v -> {
-            scheduleDailyNotification();
+            scheduleNotification();
         });
 
         buttonBack = findViewById(R.id.buttonBack);
@@ -159,7 +158,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     @SuppressLint("ScheduleExactAlarm")
-    private void scheduleDailyNotification() {
+    private void scheduleNotification() {
         // Time for the alarm (19:00)
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.SECOND, 15);
@@ -194,5 +193,38 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ScheduleExactAlarm")
+    private void scheduleDailyNotification() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, notificationHour);
+        calendar.set(Calendar.MINUTE, notificationMinute);
+
+        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+        }
+
+        Intent intent = new Intent(this, NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendar.getTimeInMillis(),
+                    pendingIntent
+            );
+
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+            String formattedTime = sdf.format(calendar.getTime());
+            Toast.makeText(this, "Codzienne przypomnienie ustawione na " + formattedTime + " 💪", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Nie udało się ustawić przypomnienia 😔", Toast.LENGTH_SHORT).show();
+        }
+    }
 
 }

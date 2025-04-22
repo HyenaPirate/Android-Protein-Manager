@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private int totalProteins = 0;
     private int totalCarbs = 0;
     private int totalCalories = 0;
+    private int totalSteps = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                     if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
 
                         stepsCount = (int) event.values[0];
-
+                        SaveSteps((int) event.values[0]);
                         stepsValueTextView.setText(String.format(Locale.getDefault(), "%d", stepsCount));
                     }
                 }
@@ -172,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
         totalProteins = 0;
         totalCarbs = 0;
         totalCalories = 0;
+        totalSteps = 0;
 
         ArrayList<String> productList = new ArrayList<>();
         JsonManager jsonManager = new JsonManager();
@@ -187,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
             JsonObject day = entry.getAsJsonObject();
             if (day.has("date") && today.equals(day.get("date").getAsString())) {
                 todayIds = day.getAsJsonArray("productsConsumed");
+                if (day.has("stepsCounted")) totalSteps += day.get("stepsCounted").getAsInt();
                 break;
             }
         }
@@ -231,14 +234,18 @@ public class MainActivity extends AppCompatActivity {
         return productList;
     }
 
+    private void SaveSteps(int count){
+        JsonManager manager = new JsonManager();
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        manager.saveSteps(this, today, count);
+    }
+
 
     private void UpdateCounters(){
         proteinValueTextView.setText(String.valueOf(totalProteins));
         carbsValueTextView.setText(String.valueOf(totalCarbs));
         caloriesValueTextView.setText(String.valueOf(totalCalories));
-        Log.d("Counter", "protein: " + String.valueOf(totalProteins));
-        Log.d("Counter", "carbs: " + String.valueOf(totalCarbs));
-        Log.d("Counter", "calories: " + String.valueOf(totalCalories));
+        stepsValueTextView.setText(String.valueOf(totalSteps));
     }
 
     @Override
