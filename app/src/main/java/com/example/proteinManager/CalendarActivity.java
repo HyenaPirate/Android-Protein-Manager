@@ -1,14 +1,18 @@
 package com.example.proteinManager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -26,8 +30,9 @@ import java.util.Locale;
 public class CalendarActivity extends AppCompatActivity {
 
     private TextView proteinTextView, carbsTextView, caloriesTextView, stepsTextView;
-    private ListView productList;
-    private CalendarView calendarView;
+    private ListView productListView;
+    private ArrayList<String> productList;
+    private ArrayAdapter<String> adapter;
     private ImageButton backButton;
 
     private int totalProteins =0, totalCarbs =0, totalCalories =0, totalSteps = 0;
@@ -37,24 +42,32 @@ public class CalendarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
-        calendarView = findViewById(R.id.calendarView);
+        productListView = findViewById(R.id.listView_productList);
+        CalendarView calendarView = findViewById(R.id.calendarView);
+        backButton = findViewById(R.id.button_back);
+
         proteinTextView = findViewById(R.id.tv_proteinValue);
         carbsTextView = findViewById(R.id.tv_carbsValue);
         caloriesTextView = findViewById(R.id.tv_caloriesValue);
         stepsTextView = findViewById(R.id.tv_stepsValue);
-        backButton = findViewById(R.id.button_back);
-        productList = findViewById(R.id.listView_productList);
 
         backButton.setOnClickListener(v -> finish());
 
-        calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> updateDate(year+"-"+(month+1)+"-"+dayOfMonth));
+        productList = new ArrayList<>();
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, productList);
+        productListView.setAdapter(adapter);
+
+        calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
+            String selectedDate = year + "-" + (month + 1) + "-" + dayOfMonth;
+            updateDate(selectedDate);
+        });
 
     }
 
     private void updateDate(String dateSelected){
         Log.d("Calendar", dateSelected);
         ArrayList<String> consumedProducts = loadProductsList(this, dateSelected);
-        //productList = consumedProducts;
+        productList = consumedProducts;
     }
 
 

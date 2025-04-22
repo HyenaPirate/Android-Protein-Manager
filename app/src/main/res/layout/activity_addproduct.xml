@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:ignore="ExtraText">
 
 
     <ImageButton
@@ -27,7 +29,7 @@
         android:background="@android:color/transparent"
         android:textSize="20sp"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="10dp"/>
 
     <EditText
         android:id="@+id/editText_productName"
@@ -37,7 +39,7 @@
         android:textColorHint="@color/hintColor"
         android:background="@android:color/white"
         android:padding="12dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="8dp"/>
 
     <EditText
         android:id="@+id/editText_carbs"
@@ -48,8 +50,7 @@
         android:background="@android:color/white"
         android:padding="12dp"
         android:inputType="number"
-        android:layout_marginTop="10dp"/>
-
+        android:layout_marginTop="8dp"/>
     <EditText
         android:id="@+id/editText_protein"
         android:layout_width="match_parent"
@@ -59,7 +60,17 @@
         android:background="@android:color/white"
         android:padding="12dp"
         android:inputType="number"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="8dp"/>
+    <EditText
+        android:id="@+id/editText_calories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/calories"
+        android:textColorHint="@color/hintColor"
+        android:background="@android:color/white"
+        android:padding="12dp"
+        android:inputType="number"
+        android:layout_marginTop="8dp"/>
 <LinearLayout
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
@@ -97,7 +108,7 @@ android:gravity="center_vertical">
         android:gravity="center_vertical"
         android:background="@android:color/transparent"
         android:layout_marginTop="20dp"
-        android:padding="8dp">
+        android:padding="2dp">
 
         <TextView
             android:layout_width="wrap_content"
