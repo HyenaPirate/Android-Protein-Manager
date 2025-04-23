@@ -38,7 +38,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    private SharedPreferences sharedPreferences;
+    //private SharedPreferences sharedPreferences;
     private static final String PREFS_NAME = "AppSettings";
     private static final String PREF_LANGUAGE = "Language";
     private static final String PREF_DARK_MODE = "DarkMode";
@@ -64,11 +64,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String email = prefs.getString("email", null);
-        String password = prefs.getString("password", null);
-
-        if (email == null || password == null) {
+        if (!CheckIfLoggedIn()) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
@@ -77,9 +73,10 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        JsonManager manager = new JsonManager();
+        JsonObject settings = manager.readJSONObject(this, "settings");
 
-        String language = sharedPreferences.getString(PREF_LANGUAGE, "en");
+        String language = settings.get("appLanguage").getAsString();
         Locale locale = new Locale(language);
         Locale.setDefault(locale);
         Configuration config = new Configuration();
@@ -87,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         getResources().updateConfiguration(config, getResources().getDisplayMetrics());
 
         setContentView(R.layout.activity_main);
-        boolean isDarkMode = sharedPreferences.getBoolean(PREF_DARK_MODE, false);
+        boolean isDarkMode = settings.get("isDarkTheme").getAsBoolean();
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {
@@ -285,5 +282,17 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("MainActivity", "Permission to recognize activity has not been granted");
             }
         }
+    }
+
+    private boolean CheckIfLoggedIn(){
+        JsonManager manager = new JsonManager();
+        JsonObject settings =  manager.readJSONObject(this, "settings");
+        if (!settings.has("currentAccount") || settings.get("currentAccount").isJsonNull()){
+            return false;
+        }
+
+        String loggedInUser = settings.get("currentAccount").getAsString();
+        JsonObject userData = manager.readJSONObject(this, "userData");
+        return userData.has(loggedInUser);
     }
 }

@@ -20,6 +20,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.widget.Switch;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -36,8 +38,13 @@ public class SettingsActivity extends AppCompatActivity {
     private ImageButton buttonBack;
     private androidx.appcompat.widget.SwitchCompat switchDarkMode;
 
+    private androidx.appcompat.widget.SwitchCompat switchNotification;
+
     private Button notificationButton1;
     private Button notificationButton2;
+
+    private TimePicker timePickerNotification;
+
 
     private int notificationHour = 17, notificationMinute = 30;
 
@@ -67,6 +74,12 @@ public class SettingsActivity extends AppCompatActivity {
         boolean isDarkMode = sharedPreferences.getBoolean("DarkMode", false);
         switchDarkMode.setChecked(isDarkMode);
 
+        switchNotification = findViewById(R.id.switch_daily_notification);
+
+        boolean doNotify = sharedPreferences.getBoolean("Notification", false);
+        switchNotification.setChecked(doNotify);
+
+
         setAppTheme(isDarkMode);
 
         buttonBack.setOnClickListener(v -> {
@@ -81,6 +94,18 @@ public class SettingsActivity extends AppCompatActivity {
             setAppTheme(isChecked);
             editor.putBoolean("DarkMode", isChecked);
             editor.apply();
+        });
+
+        switchNotification.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            ManageDailyNotifications();
+        });
+
+        timePickerNotification = findViewById(R.id.timePicker);
+
+        timePickerNotification.setOnTimeChangedListener((view, hourOfDay, minute) -> {
+            NotificationScheduler.cancelDailyNotification(this);
+            ManageDailyNotifications();
+            Log.i("Time", notificationHour+":"+notificationMinute);
         });
 
     }
@@ -193,37 +218,24 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("ScheduleExactAlarm")
-    private void scheduleDailyNotification() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, notificationHour);
-        calendar.set(Calendar.MINUTE, notificationMinute);
 
-        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
-            calendar.add(Calendar.DAY_OF_YEAR, 1);
+    private void ManageDailyNotifications(){
+
+        if (!switchNotification.isChecked()){
+            NotificationScheduler.cancelDailyNotification(this);
+            return;
         }
+        getNotificationTime();
+        NotificationScheduler.scheduleDailyNotification(this, notificationHour, notificationMinute);
+    }
 
-        Intent intent = new Intent(this, NotificationReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this,
-                0,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager != null) {
-            alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(),
-                    pendingIntent
-            );
-
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-            String formattedTime = sdf.format(calendar.getTime());
-            Toast.makeText(this, "Codzienne przypomnienie ustawione na " + formattedTime + " 💪", Toast.LENGTH_SHORT).show();
+    private void getNotificationTime(){
+        if (Build.VERSION.SDK_INT >= 23) {
+            notificationHour = timePickerNotification.getHour();
+            notificationMinute = timePickerNotification.getMinute();
         } else {
-            Toast.makeText(this, "Nie udało się ustawić przypomnienia 😔", Toast.LENGTH_SHORT).show();
+            notificationHour = timePickerNotification.getCurrentHour();
+            notificationMinute = timePickerNotification.getCurrentMinute();
         }
     }
 

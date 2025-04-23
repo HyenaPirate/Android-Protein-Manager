@@ -86,6 +86,75 @@ public class JsonManager {
         }
     }
 
+    public void appendToJSONObject(Context context, String fileName, JsonObject newEntry) {
+        File file = getJsonFile(context, fileName);
+        Gson gson = new Gson();
+        JsonObject existingData = new JsonObject();
+
+        try {
+            // If file exists and is not empty, load existing data
+            if (file.exists() && file.length() > 0) {
+                FileReader reader = new FileReader(file);
+                existingData = gson.fromJson(reader, JsonObject.class);
+                reader.close();
+            }
+
+            // Merge: Add each property from newEntry to existingData
+            for (String key : newEntry.keySet()) {
+                existingData.add(key, newEntry.get(key));
+            }
+
+            // Save the updated JSON object back to the file
+            FileWriter writer = new FileWriter(file);
+            gson.toJson(existingData, writer);
+            writer.close();
+
+            Toast.makeText(context, "JSON updated with new entry.", Toast.LENGTH_SHORT).show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, "Failed to append to JSON.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void updateStringProperty(Context context, String fileName, String propertyName, String newValue) {
+        File file = getJsonFile(context, fileName);
+        Gson gson = new Gson();
+
+        try {
+            if (!file.exists() || file.length() == 0) {
+                Toast.makeText(context, "JSON file not found or empty.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Load current JSON data
+            FileReader reader = new FileReader(file);
+            JsonObject rootObject = gson.fromJson(reader, JsonObject.class);
+            reader.close();
+
+            // Check if the property exists (optional)
+            if (rootObject.has(propertyName)) {
+                rootObject.addProperty(propertyName, newValue);
+
+                // Save updated JSON back to file
+                FileWriter writer = new FileWriter(file);
+                gson.toJson(rootObject, writer);
+                writer.close();
+
+                Toast.makeText(context, "Updated '" + propertyName + "' to '" + newValue + "'", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Property '" + propertyName + "' not found in JSON.", Toast.LENGTH_SHORT).show();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, "Failed to update JSON property.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
+
     public void saveJSONArray(Context context, String fileName, JsonArray jsonArray) {
         File file = getJsonFile(context, fileName);
 
@@ -183,6 +252,12 @@ public class JsonManager {
 
         saveJSONArray(context, "calendar", calendarArray);
     }
+
+    public boolean isJsonFileValid(Context context, String fileName) {
+        File file = getJsonFile(context, fileName);
+        return file.exists() && file.length() > 0;
+    }
+
 
 
 }

@@ -15,6 +15,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import com.google.gson.JsonObject;
+
 import java.io.File;
 
 
@@ -24,7 +26,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
     private ImageView avatarImage;
     private EditText nameEditText, emailEditText, passwordEditText;
     private Button saveButton, backupButton, logoutButton;
-    private static final String PREFS_NAME = "UserPrefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,20 +42,11 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         saveButton = findViewById(R.id.button_save);
         logoutButton = findViewById(R.id.button_logout);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        String name = sharedPreferences.getString("name", "");
-        String email = sharedPreferences.getString("email", "");
-        String password = sharedPreferences.getString("password", "");
-
-        nameEditText.setText(name);
-        emailEditText.setText(email);
-        passwordEditText.setText(password);
+        LoadUserData();
 
         logoutButton.setOnClickListener(v -> {
-            SharedPreferences prefs = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.clear();
-            editor.apply();
+            JsonManager manager = new JsonManager();
+            manager.updateStringProperty(this, "settings", "currentAccount", "");
 
             Intent intent = new Intent(ProfileSettingsActivity.this, LoginActivity.class);
             startActivity(intent);
@@ -65,7 +57,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         });
 
         saveButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Changes saved!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Changes would be saved!", Toast.LENGTH_SHORT).show();
         });
 
         findShopButton.setOnClickListener(v -> {
@@ -119,6 +111,22 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context, "No Bluetooth app found.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void LoadUserData(){
+        JsonManager manager = new JsonManager();
+        JsonObject settings = manager.readJSONObject(this, "settings");
+        String userName = settings.get("currentAccount").getAsString();
+
+        JsonObject users = manager.readJSONObject(this, "userData");
+
+        JsonObject userData = users.get(userName).getAsJsonObject();
+        String userEmail = userData.get("userEmail").getAsString();
+        String userPassword = userData.get("userPassword").getAsString();
+
+        nameEditText.setText(userName);
+        emailEditText.setText(userEmail);
+        passwordEditText.setText(userPassword);
     }
 
 }

@@ -83,6 +83,29 @@
         android:layout_height="56dp"
         android:hint="@string/target_protein"
         android:inputType="number" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="84dp"
+        android:background="@android:color/transparent"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Daily Notification"
+            android:textSize="22sp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_daily_notification"
+            android:layout_width="56dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="15dp" />
+    </LinearLayout>
     <TimePicker
         android:id="@+id/timePicker"
         android:layout_width="wrap_content"
