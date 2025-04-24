@@ -1,8 +1,10 @@
 package com.example.proteinManager;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -22,6 +24,8 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -58,19 +62,29 @@ public class CalendarActivity extends AppCompatActivity {
         productListView.setAdapter(adapter);
 
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-            String selectedDate = year + "-" + (month + 1) + "-" + dayOfMonth;
-            updateDate(selectedDate);
+            @SuppressLint("DefaultLocale") String formattedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth);
+            Log.i("Calendar", formattedDate);
+            updateDate(formattedDate);
         });
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalDate today = null;
+            today = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String selectedDate = today.format(formatter);
+            updateDate(selectedDate);
+        }
 
     }
 
     private void updateDate(String dateSelected){
         Log.d("Calendar", dateSelected);
+        productList.clear();
         ArrayList<String> consumedProducts = loadProductsList(this, dateSelected);
-        productList = consumedProducts;
+        productList.addAll(consumedProducts);
+        adapter.notifyDataSetChanged();
     }
-
-
 
     private void UpdateCounters(){
         proteinTextView.setText(String.valueOf(totalProteins));
@@ -85,6 +99,8 @@ public class CalendarActivity extends AppCompatActivity {
         totalCarbs = 0;
         totalCalories = 0;
         totalSteps = 0;
+
+        UpdateCounters();
 
         ArrayList<String> productList = new ArrayList<>();
         JsonManager jsonManager = new JsonManager();
@@ -140,7 +156,9 @@ public class CalendarActivity extends AppCompatActivity {
 
             }
         }
+        Log.d("Calendar", "Protein before update: " + totalProteins);
         UpdateCounters();
+        Log.d("Calendar", "Protein after update: " + proteinTextView.getText());
 
         return productList;
     }

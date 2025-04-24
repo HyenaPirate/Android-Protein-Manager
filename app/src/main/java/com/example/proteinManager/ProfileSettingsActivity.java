@@ -18,6 +18,7 @@ import androidx.core.content.FileProvider;
 import com.google.gson.JsonObject;
 
 import java.io.File;
+import java.util.ArrayList;
 
 
 public class ProfileSettingsActivity extends AppCompatActivity {
@@ -81,11 +82,11 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         });
 
         backupButton.setOnClickListener(v -> {
-            sendJsonViaBluetooth(this, "products");
+            BackupViaBluetooth(this, "products", "calendar");
         });
     }
 
-    public void sendJsonViaBluetooth(Context context, String fileName) {
+    private void sendJsonViaBluetooth(Context context, String fileName) {
         File file = new File(context.getExternalFilesDir(null), fileName + ".json");
 
         if (!file.exists()) {
@@ -112,6 +113,44 @@ public class ProfileSettingsActivity extends AppCompatActivity {
             Toast.makeText(context, "No Bluetooth app found.", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void BackupViaBluetooth(Context context, String fileName1, String fileName2) {
+        File file1 = new File(context.getExternalFilesDir(null), fileName1 + ".json");
+        File file2 = new File(context.getExternalFilesDir(null), fileName2 + ".json");
+
+        if (!file1.exists() || !file2.exists()) {
+            Toast.makeText(context, "One or both files not found!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Uri fileUri1 = FileProvider.getUriForFile(
+                context,
+                context.getPackageName() + ".fileprovider",
+                file1
+        );
+        Uri fileUri2 = FileProvider.getUriForFile(
+                context,
+                context.getPackageName() + ".fileprovider",
+                file2
+        );
+
+        ArrayList<Uri> fileUris = new ArrayList<>();
+        fileUris.add(fileUri1);
+        fileUris.add(fileUri2);
+
+        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        intent.setType("application/json");
+        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris);
+        intent.setPackage("com.android.bluetooth"); // Targets Bluetooth app
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        try {
+            context.startActivity(Intent.createChooser(intent, "Send JSON files via Bluetooth"));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(context, "No Bluetooth app found.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void LoadUserData(){
         JsonManager manager = new JsonManager();

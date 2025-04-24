@@ -10,6 +10,8 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,12 +30,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import android.app.NotificationChannel;
 import androidx.core.app.NotificationCompat;
+
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
+
 import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
-
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
     private Button buttonChangeLanguage;
     private ImageButton buttonBack;
     private androidx.appcompat.widget.SwitchCompat switchDarkMode;
@@ -45,6 +49,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     private TimePicker timePickerNotification;
 
+    private EditText proteinTargetEditText;
+
 
     private int notificationHour = 17, notificationMinute = 30;
 
@@ -54,14 +60,11 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE);
-        editor = sharedPreferences.edit();
 
         notificationButton1 = findViewById(R.id.buttonNotification1);
         notificationButton1.setOnClickListener(v -> {
             sendImmediateNotification();
         });
-
         notificationButton2 = findViewById(R.id.buttonNotification2);
         notificationButton2.setOnClickListener(v -> {
             scheduleNotification();
@@ -70,17 +73,32 @@ public class SettingsActivity extends AppCompatActivity {
         buttonBack = findViewById(R.id.buttonBack);
         buttonChangeLanguage = findViewById(R.id.buttonChangeLanguage);
         switchDarkMode = findViewById(R.id.switch_dark_mode);
-
-        boolean isDarkMode = sharedPreferences.getBoolean("DarkMode", false);
-        switchDarkMode.setChecked(isDarkMode);
-
         switchNotification = findViewById(R.id.switch_daily_notification);
+        proteinTargetEditText = findViewById(R.id.editTarget_protein);
+        timePickerNotification = findViewById(R.id.timePicker);
 
-        boolean doNotify = sharedPreferences.getBoolean("Notification", false);
-        switchNotification.setChecked(doNotify);
+        LoadSettings();
 
+        proteinTargetEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+            }
 
-        setAppTheme(isDarkMode);
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                String newText = charSequence.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String updatedText = editable.toString();
+                if (updatedText.isEmpty()){
+                    return;
+                }
+                JsonManager manager = new JsonManager();
+                manager.updateIntProperty(proteinTargetEditText.getContext(), "settings", "targetProtein", Integer.parseInt(updatedText));
+            }
+        });
 
         buttonBack.setOnClickListener(v -> {
             Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
@@ -91,20 +109,28 @@ public class SettingsActivity extends AppCompatActivity {
         buttonChangeLanguage.setOnClickListener(v -> showLanguageDialog());
 
         switchDarkMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            setAppTheme(isChecked);
-            editor.putBoolean("DarkMode", isChecked);
-            editor.apply();
+            // Apply the theme
+            AppCompatDelegate.setDefaultNightMode(
+                    isChecked ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
+            );
+
+            // Update settings file
+            JsonManager manager = new JsonManager();
+            manager.updateStringProperty(this, "settings", "isDarkTheme", String.valueOf(isChecked));
         });
 
         switchNotification.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            JsonManager manager = new JsonManager();
+            manager.updateStringProperty(this, "settings", "doDailyNotification", String.valueOf(isChecked));
             ManageDailyNotifications();
         });
-
-        timePickerNotification = findViewById(R.id.timePicker);
 
         timePickerNotification.setOnTimeChangedListener((view, hourOfDay, minute) -> {
             NotificationScheduler.cancelDailyNotification(this);
             ManageDailyNotifications();
+            JsonManager manager = new JsonManager();
+            manager.updateIntProperty(this, "settings", "dailyNotificationHour", hourOfDay);
+            manager.updateIntProperty(this, "settings", "dailyNotificationMinute", minute);
             Log.i("Time", notificationHour+":"+notificationMinute);
         });
 
@@ -125,24 +151,39 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void changeLanguage(String langCode) {
-        editor.putString("Language", langCode);
-        editor.apply();
-
+        // Apply the language
         Locale locale = new Locale(langCode);
         Locale.setDefault(locale);
         Configuration config = new Configuration();
         config.setLocale(locale);
         getResources().updateConfiguration(config, getResources().getDisplayMetrics());
 
+        // Update settings file
+        JsonManager manager = new JsonManager();
+        manager.updateStringProperty(this, "settings", "appLanguage", langCode);
+
+        // Recreate activity to reflect language change
         recreate();
     }
 
-    private void setAppTheme(boolean isDarkMode) {
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+    @SuppressLint("ObsoleteSdkInt")
+    private void LoadSettings(){
+        JsonManager manager = new JsonManager();
+        JsonObject settings = manager.readJSONObject(this, "settings");
+
+        switchDarkMode.setChecked(settings.get("isDarkTheme").getAsBoolean());
+        switchNotification.setChecked(settings.get("doDailyNotification").getAsBoolean());
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            timePickerNotification.setHour(settings.get("dailyNotificationHour").getAsInt());
+            timePickerNotification.setMinute(settings.get("dailyNotificationMinute").getAsInt());
         } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            timePickerNotification.setCurrentHour(settings.get("dailyNotificationHour").getAsInt());
+            timePickerNotification.setCurrentMinute(settings.get("dailyNotificationMinute").getAsInt());
         }
+
+
+        proteinTargetEditText.setText(settings.get("targetProtein").getAsString());
     }
 
     private void sendImmediateNotification() {
@@ -238,5 +279,7 @@ public class SettingsActivity extends AppCompatActivity {
             notificationMinute = timePickerNotification.getCurrentMinute();
         }
     }
+
+
 
 }

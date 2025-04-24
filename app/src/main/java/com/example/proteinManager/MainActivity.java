@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        CheckFilesHealth();
+        applyInitialSettings();
         super.onCreate(savedInstanceState);
 
         if (!CheckIfLoggedIn()) {
@@ -75,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
 
         JsonManager manager = new JsonManager();
         JsonObject settings = manager.readJSONObject(this, "settings");
+
+
 
         String language = settings.get("appLanguage").getAsString();
         Locale locale = new Locale(language);
@@ -287,12 +291,68 @@ public class MainActivity extends AppCompatActivity {
     private boolean CheckIfLoggedIn(){
         JsonManager manager = new JsonManager();
         JsonObject settings =  manager.readJSONObject(this, "settings");
-        if (!settings.has("currentAccount") || settings.get("currentAccount").isJsonNull()){
+        if (!settings.has("currentAccount") || settings.get("currentAccount").isJsonNull() || settings.get("currentAccount").getAsString().isEmpty()){
             return false;
         }
-
         String loggedInUser = settings.get("currentAccount").getAsString();
         JsonObject userData = manager.readJSONObject(this, "userData");
         return userData.has(loggedInUser);
+    }
+
+    private void CheckFilesHealth(){
+        JsonManager manager = new JsonManager();
+        if(!manager.isJsonFileValid(this, "settings")){
+            JsonObject settings = new JsonObject();
+
+            settings.addProperty("isDarkTheme", false);
+            settings.addProperty("doDailyNotification", false);
+            settings.addProperty("appLanguage", "en");
+            settings.addProperty("dailyNotificationHour", 17);
+            settings.addProperty("dailyNotificationMinute", 30);
+            settings.addProperty("targetProtein", 0);
+            settings.addProperty("currentAccount", "");
+
+            manager.saveJSONObject(this, "settings", settings);
+            Log.i("Files", "Utworzono settings.json");
+        }
+
+        if(!manager.isJsonFileValid(this, "products")){
+            JsonArray array = new JsonArray();
+            manager.saveJSONArray(this, "products", array);
+            Log.i("Files", "Utworzono products.json");
+        }
+        if(!manager.isJsonFileValid(this, "calendar")){
+            JsonArray array = new JsonArray();
+            manager.saveJSONArray(this, "calendar", array);
+            Log.i("Files", "Utworzono calendar.json");
+        }
+        if(!manager.isJsonFileValid(this, "userData")){
+            manager.createEmptyJsonFile(this, "userData");
+            Log.i("Files", "Utworzono userData.json");
+        }
+    }
+
+    private void applyInitialSettings() {
+        JsonManager manager = new JsonManager();
+        JsonObject settings = manager.readJSONObject(this, "settings");
+
+        // Apply theme
+        if (settings.has("isDarkTheme")) {
+            boolean isDark = settings.get("isDarkTheme").getAsBoolean();
+            AppCompatDelegate.setDefaultNightMode(
+                    isDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
+            );
+        }
+
+        // Apply language
+        if (settings.has("appLanguage")) {
+            String langCode = settings.get("appLanguage").getAsString();
+            Locale locale = new Locale(langCode);
+            Locale.setDefault(locale);
+
+            Configuration config = new Configuration();
+            config.setLocale(locale);
+            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+        }
     }
 }

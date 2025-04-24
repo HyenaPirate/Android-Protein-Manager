@@ -33,6 +33,7 @@ public class AddProductActivity extends AppCompatActivity {
     private EditText productNameEditText;
     private EditText productProteinEditText;
     private EditText productCarbsEditText;
+    private EditText productCaloriesEditText;
     private EditText productCodeEditText;
     private ArrayList<String> productList;
     private ArrayAdapter<String> adapter;
@@ -49,6 +50,7 @@ public class AddProductActivity extends AppCompatActivity {
         productProteinEditText = findViewById(R.id.editText_protein);
         productCarbsEditText = findViewById(R.id.editText_carbs);
         productCodeEditText = findViewById(R.id.editText_productCode);
+        productCaloriesEditText = findViewById(R.id.editText_calories);
         ListView listView = findViewById(R.id.listView_productList);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -124,7 +126,7 @@ public class AddProductActivity extends AppCompatActivity {
         JsonObject newProduct = new JsonObject();
         newProduct.addProperty("productId", newId);
         newProduct.addProperty("productName", name);
-        newProduct.add("productCode", null); // null value
+        newProduct.addProperty("productCode", productCodeEditText.getText().toString()); // null value
         newProduct.addProperty("productUnit", "sztuka");
         newProduct.addProperty("productBaseCount", 1);
 
@@ -132,7 +134,7 @@ public class AddProductActivity extends AppCompatActivity {
         JsonObject nutrients = new JsonObject();
         nutrients.addProperty("productProtein", Integer.parseInt(productProteinEditText.getText().toString()));
         nutrients.addProperty("productCarbohydrates", Integer.parseInt(productCarbsEditText.getText().toString()));
-        nutrients.addProperty("productCode", Integer.parseInt(productCodeEditText.getText().toString()));
+        nutrients.addProperty("productCalories", Integer.parseInt(productCaloriesEditText.getText().toString()));
 
         newProduct.add("productNutrients", nutrients);
 
@@ -159,19 +161,14 @@ public class AddProductActivity extends AppCompatActivity {
         barLauncher.launch(options);
     }
 
-    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->{
-        if (result.getContents() != null){
-            AlertDialog.Builder builder = new AlertDialog.Builder(AddProductActivity.this);
-            builder.setTitle("Result");
-            builder.setMessage(result.getContents());
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
+    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(
+            new ScanContract(),
+            result -> {
+                if (result.getContents() != null) {
+                    productCodeEditText.setText(result.getContents());
                 }
-            }).show();
-        }
-    });
+            }
+    );
 
     private ArrayList<String> loadProductsList(Context context) {
         ArrayList<String> productList = new ArrayList<>();
