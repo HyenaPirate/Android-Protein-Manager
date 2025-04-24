@@ -28,7 +28,7 @@
         android:layout_gravity="center_horizontal"/>
     <ListView
         android:id="@+id/listView_productList"
-        android:layout_width="wrap_content"
+        android:layout_width="377dp"
         android:layout_height="160dp"
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"

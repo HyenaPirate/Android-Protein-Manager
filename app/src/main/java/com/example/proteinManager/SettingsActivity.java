@@ -223,13 +223,13 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
 
+
     @SuppressLint("ScheduleExactAlarm")
     private void scheduleNotification() {
-        // Time for the alarm (19:00)
+        // Time for the alarm (e.g., 15 seconds from now for test)
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.SECOND, 15);
 
-        // If it's already past 19:00 today, schedule for tomorrow
         if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
             calendar.add(Calendar.DAY_OF_YEAR, 1);
         }
@@ -243,21 +243,32 @@ public class SettingsActivity extends AppCompatActivity {
         );
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
         if (alarmManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (!alarmManager.canScheduleExactAlarms()) {
+                    Toast.makeText(this, "This app needs permission to schedule exact alarms. Please enable it in settings.", Toast.LENGTH_LONG).show();
+
+                    Intent settingsIntent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                    startActivity(settingsIntent);
+                    return;
+                }
+            }
+
             alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
                     calendar.getTimeInMillis(),
                     pendingIntent
             );
 
-            // ✅ Toast confirmation
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
             String formattedTime = sdf.format(calendar.getTime());
-            Toast.makeText(this, "Codzienne przypomnienie ustawione na " + formattedTime + " 💪", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Notification set for " + formattedTime, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Nie udało się ustawić przypomnienia 😔", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Failed to set alarm", Toast.LENGTH_SHORT).show();
         }
     }
+
 
 
     private void ManageDailyNotifications(){
@@ -267,7 +278,13 @@ public class SettingsActivity extends AppCompatActivity {
             return;
         }
         getNotificationTime();
-        NotificationScheduler.scheduleDailyNotification(this, notificationHour, notificationMinute);
+        try {
+            NotificationScheduler.scheduleDailyNotification(this, notificationHour, notificationMinute);
+        } catch (SecurityException e) {
+            Toast.makeText(this, "Enable exact alarms permission in system settings", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+            startActivity(intent);
+        }
     }
 
     private void getNotificationTime(){
