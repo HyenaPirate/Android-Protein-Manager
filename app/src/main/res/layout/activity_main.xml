@@ -6,7 +6,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    >
 
     <ListView
         android:id="@+id/listView_productList"
@@ -216,7 +217,8 @@
             android:elevation="8dp"
             android:gravity="center"
             android:scaleType="fitCenter"
-            android:src="@drawable/calendar_24" />
+            android:src="@drawable/calendar_24"
+            />
 
         <ImageButton
             android:id="@+id/profileSettings"

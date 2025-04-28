@@ -58,6 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        CheckFile();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
@@ -294,6 +295,24 @@ public class SettingsActivity extends AppCompatActivity {
         } else {
             notificationHour = timePickerNotification.getCurrentHour();
             notificationMinute = timePickerNotification.getCurrentMinute();
+        }
+    }
+
+    private void CheckFile(){
+        JsonManager manager = new JsonManager();
+        if(!manager.isJsonFileValid(this, "settings")){
+            JsonObject settings = new JsonObject();
+
+            settings.addProperty("isDarkTheme", false);
+            settings.addProperty("doDailyNotification", false);
+            settings.addProperty("appLanguage", "en");
+            settings.addProperty("dailyNotificationHour", 17);
+            settings.addProperty("dailyNotificationMinute", 30);
+            settings.addProperty("targetProtein", 0);
+            settings.addProperty("currentAccount", "");
+
+            manager.saveJSONObject(this, "settings", settings);
+            Log.i("Files", "Utworzono settings.json");
         }
     }
 

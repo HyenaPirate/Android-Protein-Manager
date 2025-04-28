@@ -31,6 +31,7 @@ import androidx.core.content.ContextCompat;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.zxing.client.android.BuildConfig;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,7 +39,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    //private SharedPreferences sharedPreferences;
+
+
     private static final String PREFS_NAME = "AppSettings";
     private static final String PREF_LANGUAGE = "Language";
     private static final String PREF_DARK_MODE = "DarkMode";
@@ -66,14 +68,18 @@ public class MainActivity extends AppCompatActivity {
         applyInitialSettings();
         super.onCreate(savedInstanceState);
 
+        if(TestConfig.isTestMode()) autoLogin();
+
         if (!CheckIfLoggedIn()) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+           Log.i("Debug", "not logged in");
+           Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
-            finish();
-            return;
+           finish();
+           return;
         }
 
         setContentView(R.layout.activity_main);
+
 
         JsonManager manager = new JsonManager();
         JsonObject settings = manager.readJSONObject(this, "settings");
@@ -292,10 +298,13 @@ public class MainActivity extends AppCompatActivity {
         JsonManager manager = new JsonManager();
         JsonObject settings =  manager.readJSONObject(this, "settings");
         if (!settings.has("currentAccount") || settings.get("currentAccount").isJsonNull() || settings.get("currentAccount").getAsString().isEmpty()){
+            Log.i("Debug", "no current account");
             return false;
         }
         String loggedInUser = settings.get("currentAccount").getAsString();
+        Log.i("Debug", loggedInUser);
         JsonObject userData = manager.readJSONObject(this, "userData");
+        Log.i("Debug", "does it have? " + userData.has(loggedInUser));
         return userData.has(loggedInUser);
     }
 
@@ -354,5 +363,22 @@ public class MainActivity extends AppCompatActivity {
             config.setLocale(locale);
             getResources().updateConfiguration(config, getResources().getDisplayMetrics());
         }
+    }
+
+    private void autoLogin() {
+        Log.i("Debug", "Autologin initiated");
+        JsonManager manager = new JsonManager();
+        manager.updateStringProperty(this, "settings", "currentAccount", "testUser");
+        JsonObject userData = manager.readJSONObject(this, "userData");
+        if(!userData.has("testUser")){
+            Log.i("Debug", "no testUser");
+            JsonObject testUser = new JsonObject();
+            testUser.addProperty("userEmail", "test@test.com");
+            testUser.addProperty("userPassword", "test");
+            JsonObject over = new JsonObject();
+            over.add("testUser", testUser);
+            manager.saveJSONObject(this, "userData", over);
+        }
+
     }
 }
