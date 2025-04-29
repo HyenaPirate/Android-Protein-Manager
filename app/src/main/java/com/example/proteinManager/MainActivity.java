@@ -38,6 +38,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Główna aktywność aplikacji.
+ */
 public class MainActivity extends AppCompatActivity {
 
 

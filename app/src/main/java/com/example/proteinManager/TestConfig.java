@@ -2,7 +2,7 @@ package com.example.proteinManager;
 
 public class TestConfig {
     // Static boolean to control test mode manually
-    private static boolean isTestMode = true;
+    private static boolean isTestMode = false;
 
     // Getter for test mode status
     public static boolean isTestMode() {

@@ -1,7 +1,5 @@
-
-
 plugins {
-    alias(libs.plugins.android.application)
+    id("com.android.application")
 }
 
 android {
@@ -20,7 +18,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -36,14 +33,16 @@ android {
             buildConfigField("boolean", "DEBUG", "true")  // Dla wersji debug
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.gson)
     implementation(libs.material)
@@ -59,5 +58,8 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test:rules:1.5.0")
-
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.3")  // Zależy od wersji Kotlin
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")  // Zależy od wersji coroutines
 }
+
+
