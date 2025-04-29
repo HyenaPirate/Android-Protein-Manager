@@ -79,11 +79,19 @@ Funkcje główne i instrukcja obsługi
   Aplikacja automatycznie wysyła przypomnienia o dziennych celach odżywczych po wybraniu godziny w ustawieniach.
 
 Technologia
+
   Język programowania: Java
+  
   Środowisko: Android Studio
+  
   System docelowy: Android 12.0 (API 31) lub wyższy
+  
   Baza danych: Pliki JSON (lokalne przechowywanie danych)
+  
 
 Instalacja
+
   Uruchom Build Project.
+  
   Uruchom aplikację na urządzeniu lub emulatorze.
+  
