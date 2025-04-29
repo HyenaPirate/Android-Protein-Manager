@@ -4,93 +4,86 @@ Dane użytkownika i produkty są przechowywane lokalnie w plikach JSON.
 Funkcje główne i instrukcja obsługi
 1. Rejestracja i logowanie
 
-Otwórz aplikację.
+  Otwórz aplikację.
 
-Wprowadź swoją nazwę użytkownika i hasło.
+  Wprowadź swoją nazwę użytkownika i hasło.
 
-Kliknij przycisk Zaloguj lub Zarejestruj, aby utworzyć nowe konto.
+  Kliknij przycisk Zaloguj lub Zarejestruj, aby utworzyć nowe konto.
 
-Po zalogowaniu zostaniesz przeniesiony na ekran główny.
+  Po zalogowaniu zostaniesz przeniesiony na ekran główny.
 
 2. Dodawanie produktów do bazy danych
 
-Kliknij ikonę dodaj (+) na ekranie głównym.
+  Kliknij ikonę dodaj (+) na ekranie głównym.
 
-Wprowadź nazwę produktu i dane odżywcze (kalorie, białko, węglowodany).
+  Wprowadź nazwę produktu i dane odżywcze (kalorie, białko, węglowodany).
 
-Kliknij Zatwierdź, aby dodać produkt do lokalnej bazy danych.
+  Kliknij Zatwierdź, aby dodać produkt do lokalnej bazy danych.
 
 3. Skanowanie kodu kreskowego
 
-Podczas dodawania produktu wybierz opcję Skanuj kod.
+  Podczas dodawania produktu wybierz opcję Skanuj kod.
 
-Zeskanuj kod kreskowy produktu przy pomocy aparatu.
+  Zeskanuj kod kreskowy produktu przy pomocy aparatu.
 
 4. Przeglądanie dziennego spożycia
 
-Na ekranie głównym wyświetlają się:
+  Na ekranie głównym wyświetlają się:
 
-Ilość spożytych kalorii
+  Ilość spożytych kalorii
 
-Ilość spożytego białka
+  Ilość spożytego białka
 
-Ilość spożytych węglowodanów
+  Ilość spożytych węglowodanów
 
-Liczba wykonanych kroków
+  Liczba wykonanych kroków
 
 5. Dodawanie produktów do dnia
 
-Kliknij na produkt z listy na ekranie głównym, aby przypisać go do obecnego dnia.
+  Kliknij na produkt z listy na ekranie głównym, aby przypisać go do obecnego dnia.
 
-Dane odżywcze automatycznie zostaną zaktualizowane.
+  Dane odżywcze automatycznie zostaną zaktualizowane.
 
 6. Przeglądanie historii w kalendarzu
 
-Kliknij ikonę kalendarza w dolnej części ekranu.
+  Kliknij ikonę kalendarza w dolnej części ekranu.
 
-Wybierz dowolny dzień, aby zobaczyć dodane produkty i sumaryczne wartości odżywcze.
+  Wybierz dowolny dzień, aby zobaczyć dodane produkty i sumaryczne wartości odżywcze.
 
 7. Zarządzanie profilem użytkownika
 
-Kliknij ikonę profilu w dolnej nawigacji.
+  Kliknij ikonę profilu w dolnej nawigacji.
 
-Możesz zmienić:
+  Możesz zmienić:
 
-Nazwę użytkownika
+  Nazwę użytkownika
 
-Hasło
+  Hasło
 
-Wykonać kopię zapasową danych do pliku
+  Wykonać kopię zapasową danych do pliku
 
-sprawdzić pobliskie sklepy z białkiem
+  sprawdzić pobliskie sklepy z białkiem
 
 8. Ustawienia aplikacji
 
-Kliknij ikonę ustawień w dolnej nawigacji.
+  Kliknij ikonę ustawień w dolnej nawigacji.
 
-Możesz zmienić:
+  Możesz zmienić:
 
-Tryb wyświetlania (jasny/ciemny)
+  Tryb wyświetlania (jasny/ciemny)
 
-Wybrać język aplikacji
+  Wybrać język aplikacji
 
 9. Powiadomienia
 
-Aplikacja automatycznie wysyła przypomnienia o dziennych celach odżywczych.
-
-Powiadomienia działają w tle, bez konieczności otwierania aplikacji.
+  Aplikacja automatycznie wysyła przypomnienia o dziennych celach odżywczych po wybraniu godziny w ustawieniach.
 
 Technologia
-Język programowania: Java
-
-Środowisko: Android Studio
-
-System docelowy: Android 7.0 (API 24) lub wyższy
-
-Baza danych: Pliki JSON (lokalne przechowywanie danych)
+  Język programowania: Java
+  Środowisko: Android Studio
+  System docelowy: Android 12.0 (API 31) lub wyższy
+  Baza danych: Pliki JSON (lokalne przechowywanie danych)
 
 Instalacja
-
-Uruchom Build Project.
-
-Uruchom aplikację na urządzeniu lub emulatorze.
+  Uruchom Build Project.
+  Uruchom aplikację na urządzeniu lub emulatorze.
