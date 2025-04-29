@@ -1,4 +1,3 @@
-Opis aplikacji
 Aplikacja mobilna do zarządzania produktami żywnościowymi oraz śledzenia codziennych wartości odżywczych i aktywności użytkownika.
 Dane użytkownika i produkty są przechowywane lokalnie w plikach JSON.
 
